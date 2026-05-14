@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { projects, tasks, users } from '../api/client';
+import { projects, tasks } from '../api/client';
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -19,7 +19,7 @@ export default function ProjectDetail() {
 
   useEffect(() => { fetchProject(); }, [id]);
 
-  if (loading) return <div className="loading">Loading project...</div>;
+  if (loading) return <div className="loading">Loading project</div>;
   if (!project) return null;
 
   const isAdmin = project.members.find(m => m.id === user.id)?.role === 'admin';
@@ -27,21 +27,21 @@ export default function ProjectDetail() {
   return (
     <div>
       <div className="page-header">
-        <div>
-          <button className="btn btn-secondary btn-sm mb-1" onClick={() => navigate('/projects')}>← Back</button>
-          <h1>{project.name}</h1>
-          <p style={{ color: 'var(--gray-500)' }}>{project.description || 'No description'}</p>
+        <div className="page-header-left">
+          <button className="btn btn-secondary btn-sm" style={{ alignSelf: 'flex-start' }} onClick={() => navigate('/projects')}>← Back to Projects</button>
+          <h1 style={{ marginTop: '0.75rem' }}>{project.name}</h1>
+          {project.description && <span className="page-header-subtitle">{project.description}</span>}
         </div>
       </div>
 
       <div className="card-grid">
         <div className="stat-card">
           <h3>Total Tasks</h3>
-          <div className="stat-value">{project.tasks.length}</div>
+          <div className="stat-value" style={{ color: 'var(--primary)' }}>{project.tasks.length}</div>
         </div>
         <div className="stat-card">
           <h3>Members</h3>
-          <div className="stat-value">{project.members.length}</div>
+          <div className="stat-value" style={{ color: 'var(--primary)' }}>{project.members.length}</div>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ function TasksPanel({ projectId, tasks: taskList, members, isAdmin, onUpdate }) 
   };
 
   const handleDelete = async (taskId) => {
-    if (!confirm('Delete this task?')) return;
+    if (!window.confirm('Delete this task?')) return;
     try {
       await tasks.delete(taskId);
       onUpdate();
@@ -111,38 +111,44 @@ function TasksPanel({ projectId, tasks: taskList, members, isAdmin, onUpdate }) 
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2>Tasks</h2>
+      <div className="section-header">
+        <h2 className="section-title">Tasks</h2>
         {isAdmin && (
-          <button className="btn btn-primary btn-sm" onClick={() => { resetForm(); setShowCreate(true); }}>Add Task</button>
+          <button className="btn btn-primary btn-sm" onClick={() => { resetForm(); setShowCreate(true); }}>+ Add Task</button>
         )}
       </div>
 
       {taskList.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '2rem', color: 'var(--gray-400)' }}>
-          No tasks yet
+        <div className="card">
+          <div className="empty-state">
+            <div className="empty-state-icon">◌</div>
+            <p className="empty-state-text">No tasks yet</p>
+            {isAdmin && (
+              <button className="btn btn-primary btn-sm" onClick={() => { resetForm(); setShowCreate(true); }}>Add the first task</button>
+            )}
+          </div>
         </div>
       ) : (
         taskList.map((task) => (
-          <div key={task.id} className="card" style={{ padding: '1rem', marginBottom: '0.75rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div key={task.id} className="task-card">
+            <div className="task-card-header">
               <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.25rem' }}>
-                  <strong>{task.title}</strong>
+                <div className="task-card-title-row">
+                  <span className="task-card-title">{task.title}</span>
                   <span className={`badge badge-${task.status}`}>{task.status.replace('_', ' ')}</span>
                   <span className={`badge badge-${task.priority}`}>{task.priority}</span>
                 </div>
-                {task.description && <p style={{ color: 'var(--gray-500)', fontSize: '0.875rem' }}>{task.description}</p>}
-                <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '0.25rem', display: 'flex', gap: '1rem' }}>
-                  {task.assigned_name && <span>Assigned to: {task.assigned_name}</span>}
-                  {task.due_date && <span>Due: {task.due_date}</span>}
+                {task.description && <div className="task-card-desc">{task.description}</div>}
+                <div className="task-card-meta">
+                  {task.assigned_name && <span>👤 {task.assigned_name}</span>}
+                  {task.due_date && <span>📅 {task.due_date}</span>}
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <div className="task-card-actions">
                 <select
+                  className="status-select"
                   value={task.status}
                   onChange={(e) => handleStatusChange(task.id, e.target.value)}
-                  style={{ padding: '0.25rem 0.5rem', borderRadius: '6px', border: '1px solid var(--gray-300)', fontSize: '0.8125rem' }}
                 >
                   <option value="todo">To Do</option>
                   <option value="in_progress">In Progress</option>
@@ -197,7 +203,7 @@ function TasksPanel({ projectId, tasks: taskList, members, isAdmin, onUpdate }) 
               {error && <p className="error">{error}</p>}
               <div className="modal-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => { setShowCreate(false); setEditingTask(null); }}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editingTask ? 'Update' : 'Create'}</button>
+                <button type="submit" className="btn btn-primary">{editingTask ? 'Update Task' : 'Create Task'}</button>
               </div>
             </form>
           </div>
@@ -231,47 +237,56 @@ function MembersPanel({ projectId, members, isAdmin, currentUserId, onUpdate }) 
   };
 
   const handleRemove = async (userId) => {
-    if (!confirm('Remove this member?')) return;
+    if (!window.confirm('Remove this member?')) return;
     try {
       await projects.removeMember(projectId, userId);
       onUpdate();
     } catch (err) { alert(err.message); }
   };
 
+  const getInitials = (name) => name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
+
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <h2>Team</h2>
+      <div className="section-header">
+        <h2 className="section-title">Team</h2>
         {isAdmin && (
-          <button className="btn btn-primary btn-sm" onClick={() => setShowAdd(true)}>Add Member</button>
+          <button className="btn btn-primary btn-sm" onClick={() => setShowAdd(true)}>+ Add Member</button>
         )}
       </div>
 
       <div className="card">
-        {members.map((m) => (
-          <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 0', borderBottom: '1px solid var(--gray-100)' }}>
-            <div>
-              <strong style={{ fontSize: '0.875rem' }}>{m.name}</strong>
-              <p style={{ fontSize: '0.8125rem', color: 'var(--gray-400)' }}>{m.email}</p>
+        {members.length === 0 ? (
+          <p style={{ color: 'var(--text-secondary)', textAlign: 'center', padding: '1rem' }}>No members</p>
+        ) : (
+          members.map((m) => (
+            <div key={m.id} className="member-item">
+              <div className="member-info">
+                <div className="member-avatar">{getInitials(m.name)}</div>
+                <div>
+                  <div className="member-name">{m.name}</div>
+                  <div className="member-email">{m.email}</div>
+                </div>
+              </div>
+              <div className="member-actions">
+                <span className={`badge badge-${m.role}`}>{m.role}</span>
+                {isAdmin && m.id !== currentUserId && (
+                  <>
+                    <select
+                      className="status-select"
+                      value={m.role}
+                      onChange={(e) => handleRoleChange(m.id, e.target.value)}
+                    >
+                      <option value="member">Member</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleRemove(m.id)}>Remove</button>
+                  </>
+                )}
+              </div>
             </div>
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <span className={`badge badge-${m.role}`}>{m.role}</span>
-              {isAdmin && m.id !== currentUserId && (
-                <>
-                  <select
-                    value={m.role}
-                    onChange={(e) => handleRoleChange(m.id, e.target.value)}
-                    style={{ padding: '0.25rem 0.5rem', borderRadius: '6px', border: '1px solid var(--gray-300)', fontSize: '0.8125rem' }}
-                  >
-                    <option value="member">Member</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                  <button className="btn btn-danger btn-sm" onClick={() => handleRemove(m.id)}>Remove</button>
-                </>
-              )}
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {showAdd && (
@@ -286,7 +301,7 @@ function MembersPanel({ projectId, members, isAdmin, currentUserId, onUpdate }) 
               {error && <p className="error">{error}</p>}
               <div className="modal-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowAdd(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Add</button>
+                <button type="submit" className="btn btn-primary">Add Member</button>
               </div>
             </form>
           </div>

@@ -32,8 +32,11 @@ router.post('/login', (req, res) => {
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+  if (!user) {
+    return res.status(401).json({ error: 'User does not exist' });
+  }
+  if (!bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ error: 'Wrong password' });
   }
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
   res.json({

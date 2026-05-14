@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 export default function Login() {
   const { login } = useAuth();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -29,19 +30,24 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Email</label>
-            <input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            <input type="email" required placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            <div className="password-wrapper">
+              <input type={showPw ? 'text' : 'password'} required placeholder="Enter your password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+              <button type="button" className="password-toggle" onClick={() => setShowPw(s => !s)} aria-label={showPw ? 'Hide password' : 'Show password'}>
+                {showPw ? '⊙' : '◎'}
+              </button>
+            </div>
           </div>
           {error && <p className="error">{error}</p>}
           <button className="btn btn-primary btn-block mt-2" type="submit" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
         <p className="text-center mt-2">
-          Don't have an account? <Link to="/signup" className="link">Sign up</Link>
+          Don't have an account? <Link to="/signup" className="link">Create one</Link>
         </p>
       </div>
     </div>

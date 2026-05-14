@@ -1,8 +1,10 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const { theme, toggle } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -10,21 +12,39 @@ export default function Layout() {
     navigate('/login');
   };
 
+  const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
+
   return (
     <div className="app-layout">
       <aside className="sidebar">
-        <h2>TaskManager</h2>
-        <nav>
-          <NavLink to="/" end>Dashboard</NavLink>
-          <NavLink to="/projects">Projects</NavLink>
+        <div className="sidebar-brand">
+          <div className="sidebar-brand-icon">✦</div>
+          <span className="sidebar-brand-text">Task Manager</span>
+        </div>
+        <nav className="sidebar-nav">
+          <div className="sidebar-nav-label">Main</div>
+          <NavLink to="/" end>
+            <span className="nav-icon">◇</span> Dashboard
+          </NavLink>
+          <NavLink to="/projects">
+            <span className="nav-icon">⊞</span> Projects
+          </NavLink>
         </nav>
-        <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: '1rem', marginTop: 'auto' }}>
-          <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: '0.5rem', padding: '0 0.75rem' }}>
-            {user?.name}
-            <br />
-            <span className={`badge badge-${user?.role}`} style={{ marginTop: '0.25rem' }}>{user?.role}</span>
+        <div className="sidebar-footer">
+          <button className="theme-toggle-btn" onClick={toggle}>
+            <span className="theme-toggle-icon">{theme === 'light' ? '☾' : '☀'}</span>
+            {theme === 'light' ? 'Dark mode' : 'Light mode'}
+          </button>
+          <div className="sidebar-user">
+            <div className="sidebar-avatar">{initials}</div>
+            <div className="sidebar-user-info">
+              <div className="sidebar-user-name">{user?.name}</div>
+              <div className="sidebar-user-role">
+                <span className={`badge badge-${user?.role}`}>{user?.role}</span>
+              </div>
+            </div>
           </div>
-          <button className="logout-btn" onClick={handleLogout}>Log out</button>
+          <button className="logout-btn" onClick={handleLogout}>Sign out</button>
         </div>
       </aside>
       <main className="main-content">

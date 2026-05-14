@@ -32,18 +32,22 @@ export default function Projects() {
     }
   };
 
-  if (loading) return <div className="loading">Loading projects...</div>;
+  if (loading) return <div className="loading">Loading projects</div>;
 
   return (
     <div>
       <div className="page-header">
-        <h1>Projects</h1>
+        <div className="page-header-left">
+          <h1>Projects</h1>
+          <span className="page-header-subtitle">{list.length} project{list.length !== 1 ? 's' : ''} in total</span>
+        </div>
         <button className="btn btn-primary" onClick={() => setShowCreate(true)}>New Project</button>
       </div>
 
       {list.length === 0 ? (
-        <div className="card" style={{ textAlign: 'center', padding: '3rem' }}>
-          <p style={{ color: 'var(--gray-400)', marginBottom: '1rem' }}>No projects yet</p>
+        <div className="card empty-state" style={{ padding: '4rem 2rem' }}>
+          <div className="empty-state-icon">⊞</div>
+          <p className="empty-state-text">No projects yet</p>
           <button className="btn btn-primary" onClick={() => setShowCreate(true)}>Create your first project</button>
         </div>
       ) : (
@@ -51,17 +55,16 @@ export default function Projects() {
           {list.map((p) => (
             <div
               key={p.id}
-              className="card"
-              style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+              className="project-card"
               onClick={() => navigate(`/projects/${p.id}`)}
             >
               <div>
-                <h3 style={{ marginBottom: '0.25rem' }}>{p.name}</h3>
-                <p style={{ color: 'var(--gray-500)', fontSize: '0.875rem' }}>{p.description || 'No description'}</p>
+                <h3>{p.name}</h3>
+                <p>{p.description || 'No description'}</p>
               </div>
-              <div style={{ display: 'flex', gap: '1rem', color: 'var(--gray-500)', fontSize: '0.875rem' }}>
-                <span>{p.member_count} members</span>
-                <span>{p.task_count} tasks</span>
+              <div className="project-card-meta">
+                <span>👤 {p.member_count}</span>
+                <span>📋 {p.task_count}</span>
               </div>
             </div>
           ))}
@@ -75,16 +78,16 @@ export default function Projects() {
             <form onSubmit={handleCreate}>
               <div className="form-group">
                 <label>Project Name</label>
-                <input type="text" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <input type="text" required placeholder="e.g. Website Redesign" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               </div>
               <div className="form-group">
                 <label>Description</label>
-                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                <textarea placeholder="What is this project about?" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
               </div>
               {error && <p className="error">{error}</p>}
               <div className="modal-actions">
                 <button type="button" className="btn btn-secondary" onClick={() => setShowCreate(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Create</button>
+                <button type="submit" className="btn btn-primary">Create Project</button>
               </div>
             </form>
           </div>
