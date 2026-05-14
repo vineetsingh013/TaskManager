@@ -51,10 +51,32 @@ npm start        # Start server (serves API + built frontend)
 | DELETE | /api/tasks/:id | Admin | Delete task |
 | GET | /api/dashboard | Yes | Dashboard stats |
 
-## Deployment
+## Deployment (Railway)
 
-1. Push to GitHub
-2. On Railway, create a new project from repo
-3. Set start command: `npm run build && npm start`
-4. Add `JWT_SECRET` environment variable
-5. Deploy
+1. Create a GitHub repo and push this project:
+   ```bash
+   # Create repo on GitHub first, then:
+   git remote add origin <your-repo-url>
+   git push -u origin main
+   ```
+
+2. Go to [railway.com](https://railway.com) → **New Project** → **Deploy from GitHub repo**
+
+3. Select your repo — Railway auto-detects Node.js via nixpacks
+
+4. Add environment variables in Railway dashboard:
+   | Variable | Value |
+   |----------|-------|
+   | `JWT_SECRET` | (generate a random string, e.g. `openssl rand -hex 32`) |
+   | `PORT` | `3001` (Railway sets this automatically) |
+
+5. Once deployed, click **Generate Domain** to get a public URL
+
+6. Open the URL and run the seed command in Railway's shell:
+   ```bash
+   npm run seed
+   ```
+
+   Or sign up manually through the app.
+
+7. Done! Your app is live.
