@@ -45,14 +45,6 @@ npm run seed
 | charlie@example.com | member |
 | diana@example.com | member |
 
-## Deployment
-
-```bash
-npm run build             # builds frontend to client/dist
-npm start                 # starts server (serves API + built frontend)
-```
-
-Set `JWT_SECRET` env var in production. The app listens on `process.env.PORT`.
 
 ## API Endpoints
 
