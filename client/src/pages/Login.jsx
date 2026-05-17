@@ -25,6 +25,10 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
+        <div className="auth-brand">
+          <div className="sidebar-brand-icon">TM</div>
+          <span className="sidebar-brand-text">Task Manager</span>
+        </div>
         <h1>Welcome back</h1>
         <p>Sign in to your account</p>
         <form onSubmit={handleSubmit}>
