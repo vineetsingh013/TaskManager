@@ -1,34 +1,58 @@
-# Team Task Manager
+# Task Manager
 
-Full-stack team task management app with role-based access control.
+Full-stack team task management app with role-based access, dark mode, and collapsible sidebar.
 
 ## Tech Stack
 
 - **Backend**: Node.js, Express, SQLite (better-sqlite3), JWT auth
-- **Frontend**: React, Vite, React Router
+- **Frontend**: React 18, Vite, React Router
 
 ## Features
 
-- Authentication (signup/login) with JWT
-- Project CRUD with team membership
-- Task CRUD with assignment, status, priority, due dates
-- Role-based access (Admin/Member) at global and project level
-- Dashboard with task summaries, overdue tracking, recent activity
-- Project team management (add/remove members, change roles)
+- **Authentication** — Signup / Login with JWT (distinct error messages: "User does not exist" vs "Wrong password")
+- **Password visibility toggle** — Eye icon to show/hide password
+- **Projects** — Create, update, delete with team membership
+- **Tasks** — Create, edit, delete, assign, status (todo / in-progress / done), priority (low / medium / high), due dates
+- **Role-based access** — Global role (admin/member) + per-project role
+- **Dashboard** — Stats cards, overdue tasks (red), recent tasks table
+- **Upcoming Deadlines** — Sidebar section showing tasks due within 2 days (admins see all, members see only assigned)
+- **Team management** — Add member via dropdown of all users or manual email, change role, remove
+- **Dark / Light mode** — Floating toggle at top-right, persisted in localStorage
+- **Collapsible sidebar** — ≡ toggle, shows tooltips on hover when collapsed
+- **Profile section** — Avatar, name, email, role badge in sidebar footer
+- **Animated loader** — 20-second branded loader with rotating taglines, progress bar, percentage, floating particles, step dots
+- **Responsive** — Adapts to mobile
 
 ## Setup
 
 ```bash
-npm run setup    # Install all dependencies
-npm run dev      # Run backend + frontend in dev mode
+npm install               # installs root + server + client deps (via postinstall)
+npm run dev               # runs server:3001 + client:5173 concurrently
 ```
 
-For production:
+To seed sample data:
 
 ```bash
-npm run build    # Build frontend
-npm start        # Start server (serves API + built frontend)
+npm run seed
 ```
+
+**Sample accounts** (password for all: `password123`):
+
+| Email | Role |
+|---|---|
+| alice@example.com | admin |
+| bob@example.com | member |
+| charlie@example.com | member |
+| diana@example.com | member |
+
+## Deployment
+
+```bash
+npm run build             # builds frontend to client/dist
+npm start                 # starts server (serves API + built frontend)
+```
+
+Set `JWT_SECRET` env var in production. The app listens on `process.env.PORT`.
 
 ## API Endpoints
 
@@ -49,34 +73,6 @@ npm start        # Start server (serves API + built frontend)
 | POST | /api/tasks/project/:projectId | Member+ | Create task |
 | PUT | /api/tasks/:id | Yes | Update task |
 | DELETE | /api/tasks/:id | Admin | Delete task |
-| GET | /api/dashboard | Yes | Dashboard stats |
-
-## Deployment (Railway)
-
-1. Create a GitHub repo and push this project:
-   ```bash
-   # Create repo on GitHub first, then:
-   git remote add origin <your-repo-url>
-   git push -u origin main
-   ```
-
-2. Go to [railway.com](https://railway.com) → **New Project** → **Deploy from GitHub repo**
-
-3. Select your repo — Railway auto-detects Node.js via nixpacks
-
-4. Add environment variables in Railway dashboard:
-   | Variable | Value |
-   |----------|-------|
-   | `JWT_SECRET` | (generate a random string, e.g. `openssl rand -hex 32`) |
-   | `PORT` | `3001` (Railway sets this automatically) |
-
-5. Once deployed, click **Generate Domain** to get a public URL
-
-6. Open the URL and run the seed command in Railway's shell:
-   ```bash
-   npm run seed
-   ```
-
-   Or sign up manually through the app.
-
-7. Done! Your app is live.
+| GET | /api/dashboard | Yes | Dashboard stats + overdue + upcoming deadlines |
+| GET | /api/users/all | Yes | List all registered users |
+| GET | /api/users/search?q= | Yes | Search users by name/email |
