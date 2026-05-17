@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { projects, tasks } from '../api/client';
+import { projects, tasks, users as usersApi } from '../api/client';
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -216,7 +216,19 @@ function TasksPanel({ projectId, tasks: taskList, members, isAdmin, onUpdate }) 
 function MembersPanel({ projectId, members, isAdmin, currentUserId, onUpdate }) {
   const [showAdd, setShowAdd] = useState(false);
   const [email, setEmail] = useState('');
+  const [allUsers, setAllUsers] = useState([]);
   const [error, setError] = useState('');
+
+  const memberIds = new Set(members.map(m => m.id));
+
+  const openAdd = () => {
+    setShowAdd(true);
+    setEmail('');
+    setError('');
+    usersApi.all()
+      .then(setAllUsers)
+      .catch(() => {});
+  };
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -251,7 +263,7 @@ function MembersPanel({ projectId, members, isAdmin, currentUserId, onUpdate }) 
       <div className="section-header">
         <h2 className="section-title">Team</h2>
         {isAdmin && (
-          <button className="btn btn-primary btn-sm" onClick={() => setShowAdd(true)}>+ Add Member</button>
+          <button className="btn btn-primary btn-sm" onClick={openAdd}>+ Add Member</button>
         )}
       </div>
 
@@ -295,8 +307,26 @@ function MembersPanel({ projectId, members, isAdmin, currentUserId, onUpdate }) 
             <h2>Add Member</h2>
             <form onSubmit={handleAdd}>
               <div className="form-group">
-                <label>User Email</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter user's email" />
+                <label>Select user</label>
+                <select
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={{ marginBottom: '0.5rem' }}
+                >
+                  <option value="">Choose from registered users…</option>
+                  {allUsers.filter(u => !memberIds.has(u.id)).map(u => (
+                    <option key={u.id} value={u.email}>{u.name} ({u.email})</option>
+                  ))}
+                </select>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.8125rem' }}>
+                  <span style={{ flex: 1, borderTop: '1px solid var(--border)' }} />
+                  <span>or</span>
+                  <span style={{ flex: 1, borderTop: '1px solid var(--border)' }} />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Or enter email manually</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="user@example.com" />
               </div>
               {error && <p className="error">{error}</p>}
               <div className="modal-actions">

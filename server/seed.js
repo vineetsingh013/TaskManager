@@ -34,13 +34,13 @@ db.prepare(`INSERT INTO project_members (project_id, user_id, role) VALUES (?, ?
 db.prepare(`INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_to, created_by, due_date)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(1, 'Design homepage mockup', 'Create Figma designs for the new homepage', 'in_progress', 'high', 1, 4, 1, '2026-05-20');
 db.prepare(`INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_to, created_by, due_date)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(2, 'Implement navigation bar', 'Responsive navbar with dropdowns', 'todo', 'medium', 1, 2, 1, '2026-05-25');
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(2, 'Implement navigation bar', 'Responsive navbar with dropdowns', 'todo', 'medium', 1, 2, 1, '2026-05-16');
 db.prepare(`INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_to, created_by, due_date)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(3, 'Set up CI/CD pipeline', 'GitHub Actions for automated deployment', 'done', 'high', 1, 2, 1, '2026-05-10');
 db.prepare(`INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_to, created_by, due_date)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(4, 'User authentication screen', 'Login and signup screens for mobile app', 'in_progress', 'high', 2, 3, 1, '2026-05-22');
 db.prepare(`INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_to, created_by, due_date)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(5, 'Push notifications', 'Implement push notification service', 'todo', 'medium', 2, null, 1, '2026-06-01');
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(5, 'Push notifications', 'Implement push notification service', 'todo', 'medium', 2, null, 1, '2026-05-16');
 db.prepare(`INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_to, created_by, due_date)
   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).run(6, 'Refactor auth service', 'Extract auth logic into separate microservice', 'todo', 'high', 3, 3, 2, '2026-05-15');
 db.prepare(`INSERT INTO tasks (id, title, description, status, priority, project_id, assigned_to, created_by, due_date)

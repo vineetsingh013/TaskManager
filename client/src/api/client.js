@@ -40,5 +40,6 @@ export const dashboard = {
 };
 
 export const users = {
+  all: () => request('/users/all'),
   search: (q) => request(`/users/search?q=${encodeURIComponent(q)}`),
 };

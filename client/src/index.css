@@ -511,6 +511,52 @@ body {
   flex-shrink: 0;
 }
 
+/* Deadlines section in sidebar */
+.sidebar-deadlines {
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.sidebar-deadlines .sidebar-nav-label {
+  margin-top: 0;
+}
+
+.sidebar-deadline-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 0.125rem;
+}
+
+.sidebar-deadline-item:hover {
+  background: var(--sidebar-hover);
+}
+
+.sidebar-deadline-title {
+  font-size: 0.8125rem;
+  color: white;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-deadline-date {
+  font-size: 0.6875rem;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar-collapsed .sidebar-deadlines {
+  display: none;
+}
+
 /* Sidebar footer */
 .sidebar-footer {
   border-top: 1px solid rgba(255, 255, 255, 0.06);

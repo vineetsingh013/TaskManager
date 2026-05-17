@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { dashboard } from '../api/client';
 
 export default function Layout() {
   const [open, setOpen] = useState(true);
+  const [deadlines, setDeadlines] = useState([]);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -13,6 +15,12 @@ export default function Layout() {
   };
 
   const initials = user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || '?';
+
+  useEffect(() => {
+    dashboard.get()
+      .then(data => setDeadlines(data.upcomingTasks || []))
+      .catch(() => {});
+  }, []);
 
   return (
     <div className={`app-layout ${open ? '' : 'sidebar-collapsed'}`}>
@@ -37,6 +45,17 @@ export default function Layout() {
             <span className="sidebar-nav-text">Projects</span>
           </NavLink>
         </nav>
+        {deadlines.length > 0 && (
+          <div className="sidebar-deadlines">
+            <div className="sidebar-nav-label">Upcoming Deadlines</div>
+            {deadlines.map(t => (
+              <div key={t.id} className="sidebar-deadline-item" onClick={() => navigate(`/projects/${t.project_id}`)}>
+                <span className="sidebar-deadline-title">{t.title}</span>
+                <span className="sidebar-deadline-date">{t.due_date}</span>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="sidebar-footer">
           <div className="profile-section">
             <div className="sidebar-user">

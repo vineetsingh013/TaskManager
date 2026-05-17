@@ -9,6 +9,11 @@ router.get('/', authenticate, requireAdmin, (req, res) => {
   res.json(users);
 });
 
+router.get('/all', authenticate, (req, res) => {
+  const users = db.prepare('SELECT id, name, email FROM users ORDER BY name ASC').all();
+  res.json(users);
+});
+
 router.get('/search', authenticate, (req, res) => {
   const { q } = req.query;
   if (!q) return res.json([]);
