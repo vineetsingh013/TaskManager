@@ -20,7 +20,7 @@ Full-stack team task management app with role-based access, dark mode, and colla
 - **Dark / Light mode** — Floating toggle at top-right, persisted in localStorage
 - **Collapsible sidebar** — ≡ toggle, shows tooltips on hover when collapsed
 - **Profile section** — Avatar, name, email, role badge in sidebar footer
-- **Animated loader** — 20-second branded loader with rotating taglines, progress bar, percentage, floating particles, step dots
+- **Animated loader** — Loader with rotating taglines, progress bar, percentage, floating particles, step dots
 - **Responsive** — Adapts to mobile
 
 ## Setup
